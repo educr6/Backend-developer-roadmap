@@ -1,2 +1,3 @@
 *.pdf
 !UC-3d011187-5543-4e93-90b5-8bbb623df571.pdf
+node_modules/
