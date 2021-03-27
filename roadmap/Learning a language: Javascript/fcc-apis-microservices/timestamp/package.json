@@ -4,7 +4,8 @@
   "description": "First challenge to obtain the FCC apis and microservices certification",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "author": "Eduardo Calderon",
   "license": "ISC",
