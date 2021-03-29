@@ -9,7 +9,7 @@ const stringHasOnlyNumericCharacters = (str) => {
 };
 
 const getUnixTimestamp = (dateObj) => {
-  return Math.round(dateObj.getTime() / 1);
+  return dateObj.valueOf();
 };
 
 const createResponseObj = (dateStr) => {
