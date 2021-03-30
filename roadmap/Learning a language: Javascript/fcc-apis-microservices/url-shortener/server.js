@@ -31,6 +31,19 @@ const enableCORS = function (req, res, next) {
   next();
 };
 
+function validURL(str) {
+  var pattern = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  ); // fragment locator
+  return !!pattern.test(str);
+}
+
 // global setting for safety timeouts to handle possible
 // wrong callbacks that will never be called
 const TIMEOUT = 10000;
@@ -51,18 +64,34 @@ router.get("/is-mongoose-ok", function (req, res) {
 });
 
 const createUrl = require("./url").createUrl;
-router.post("/shorturl/new", (req, res) => {
+router.post("/shorturl/new", (req, res, next) => {
   console.log("I received a request with this: ", req.body);
   const urlToCreate =
-    req.body.originalUrl ||
-    req.body.url ||
-    "https://www.youtube.com/watch?v=S9bCLPwzSC0";
+    req.body.original_url || req.body.url || "Didnt receive id";
 
+  if (!validURL(urlToCreate)) {
+    res.json({ error: "invalid url" });
+    return;
+  }
   createUrl(urlToCreate, (err, data) => {
     if (err) {
       res.json({ message: "Something failed" });
     }
-    res.json(data);
+    res.json({
+      original_url: data.original_url,
+      short_url: data.short_url,
+    });
+  });
+});
+
+const findUrlById = require("./url").findUrlById;
+router.get("/shorturl/:id", (req, res) => {
+  console.log("I received a get request with this: ", req.params.id);
+  findUrlById(req.params.id, (err, data) => {
+    if (err) {
+      res.json({ message: "Something failed" });
+    }
+    res.redirect(data.original_url);
   });
 });
 
