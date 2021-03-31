@@ -6,6 +6,7 @@ const getUsers = require("./user").getUsers;
 
 const createExercise = require("./exercise").createExercise;
 const setExerciseDate = require("./exercise").setExerciseDate;
+const getUserExerciseLog = require("./exercise").getUserExerciseLog;
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -68,6 +69,26 @@ router.get("/users", (req, res) => {
 router.post("/add", (req, res) => {
   setExerciseDate(req.body);
   createExercise(req.body, (err, data) => {
+    if (err) {
+      res.status(400);
+      res.json({ message: "Something went wrong" });
+      return;
+    }
+
+    console.log(data);
+    res.json(data);
+  });
+});
+
+router.get("/log", (req, res) => {
+  const userId = req.query.userId;
+  if (!userId) {
+    res.status(400);
+    res.json({ message: "You didnt provide a userId" });
+    return;
+  }
+
+  getUserExerciseLog(userId, (err, data) => {
     if (err) {
       res.status(400);
       res.json({ message: "Something went wrong" });
