@@ -45,6 +45,17 @@ router.post("/new-user", (req, res) => {
   });
 });
 
+router.get("/users", (req, res) => {
+  getUsers((err, data) => {
+    if (err) {
+      res.status(400);
+      res.json({ message: "Something went wrong" });
+    }
+
+    res.json(data);
+  });
+});
+
 app.use("/api/exercise", router);
 
 const listener = app.listen(process.env.PORT || 3000, function () {

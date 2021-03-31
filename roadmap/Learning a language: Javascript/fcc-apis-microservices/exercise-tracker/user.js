@@ -25,12 +25,14 @@ const createUser = (username, done) => {
 };
 
 const getUsers = (done) => {
-  Url.find().exec((err, data) => {
-    if (err) {
-      return done(err);
-    }
-    done(null, data);
-  });
+  User.find()
+    .select("username _id")
+    .exec((err, data) => {
+      if (err) {
+        return done(err);
+      }
+      done(null, data);
+    });
 };
 
 exports.UserModel = User;
