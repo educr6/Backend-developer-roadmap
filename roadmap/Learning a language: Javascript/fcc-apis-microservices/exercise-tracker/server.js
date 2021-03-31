@@ -1,12 +1,21 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
+
 const createUser = require("./user").createUser;
 const getUsers = require("./user").getUsers;
+
+const createExercise = require("./exercise").createExercise;
+const setExerciseDate = require("./exercise").setExerciseDate;
 
 const express = require("express");
 const bodyParser = require("body-parser");
 const router = express.Router();
 const app = express();
+
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -52,6 +61,20 @@ router.get("/users", (req, res) => {
       res.json({ message: "Something went wrong" });
     }
 
+    res.json(data);
+  });
+});
+
+router.post("/add", (req, res) => {
+  setExerciseDate(req.body);
+  createExercise(req.body, (err, data) => {
+    if (err) {
+      res.status(400);
+      res.json({ message: "Something went wrong" });
+      return;
+    }
+
+    console.log(data);
     res.json(data);
   });
 });
