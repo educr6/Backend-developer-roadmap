@@ -21,11 +21,11 @@ const createExercise = async (exercise, done) => {
     }
 
     const result = {
-      _id: data._id,
       username: user.username,
-      date: data.date,
-      duration: data.duration,
       description: data.description,
+      duration: data.duration,
+      _id: data._id,
+      date: data.date.toDateString(),
     };
 
     done(null, result);
