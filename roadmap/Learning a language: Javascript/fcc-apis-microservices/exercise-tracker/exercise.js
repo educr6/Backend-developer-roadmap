@@ -23,12 +23,25 @@ const createExercise = (exercise, done) => {
   });
 };
 
-const getUserExerciseLog = async (userId, done) => {
+const getUserExerciseLog = async (userId, filter, done) => {
   const user = await User.findById(userId);
   const username = user.username;
+  let exerciseQuery = { userId: userId };
+  let dateQuery = {};
 
-  Exercise.find({ userId: userId })
+  if (filter.from) {
+    dateQuery["$gte"] = new Date(filter.from);
+    exerciseQuery.date = dateQuery;
+  }
+
+  if (filter.to) {
+    dateQuery["$lt"] = new Date(filter.to);
+    exerciseQuery.date = dateQuery;
+  }
+
+  Exercise.find(exerciseQuery)
     .select({ description: 1, duration: 1, date: 1, _id: 0 })
+    .limit(filter.limit)
     .exec((err, data) => {
       if (err) {
         return done(err);

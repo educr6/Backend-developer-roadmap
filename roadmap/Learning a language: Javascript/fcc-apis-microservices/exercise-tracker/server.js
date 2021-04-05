@@ -82,13 +82,20 @@ router.post("/add", (req, res) => {
 
 router.get("/log", (req, res) => {
   const userId = req.query.userId;
+
+  const logFilter = {
+    from: req.query.from,
+    to: req.query.to,
+    limit: parseInt(req.query.limit),
+  };
+
   if (!userId) {
     res.status(400);
     res.json({ message: "You didnt provide a userId" });
     return;
   }
 
-  getUserExerciseLog(userId, (err, data) => {
+  getUserExerciseLog(userId, logFilter, (err, data) => {
     if (err) {
       res.status(400);
       res.json({ message: "Something went wrong" });
