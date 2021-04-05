@@ -11,7 +11,8 @@ let exerciseSchema = new Schema({
 
 let Exercise = mongoose.model("Exercise", exerciseSchema);
 
-const createExercise = (exercise, done) => {
+const createExercise = async (exercise, done) => {
+  const user = await User.findById(exercise.userId);
   let newExcercise = new Exercise(exercise);
 
   newExcercise.save((err, data) => {
@@ -19,7 +20,15 @@ const createExercise = (exercise, done) => {
       return done(err);
     }
 
-    done(null, data);
+    const result = {
+      _id: data._id,
+      username: user.username,
+      date: data.date,
+      duration: data.duration,
+      description: data.description,
+    };
+
+    done(null, result);
   });
 };
 
